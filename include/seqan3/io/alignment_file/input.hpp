@@ -131,8 +131,8 @@ SEQAN3_CONCEPT alignment_file_input_traits = requires (t v)
     // either ref_info_not_given or a range over ranges over alphabet (e.g. std::vector<dna4_vector>)
     requires std::same_as<typename t::ref_sequences, ref_info_not_given> ||
          (std::ranges::forward_range<typename t::ref_sequences> &&
-         std::ranges::forward_range<detail::transformation_trait_or_t<reference<typename t::ref_sequences>, dna4_vector>> &&
-         alphabet<reference_t<detail::transformation_trait_or_t<reference<typename t::ref_sequences>, dna4_vector>>>);
+         std::ranges::forward_range<detail::transformation_trait_or_t<reference2<typename t::ref_sequences>, dna4_vector>> &&
+         alphabet<std::ranges::range_reference_t<detail::transformation_trait_or_t<reference2<typename t::ref_sequences>, dna4_vector>>>);
 
     // field::ref_id
     requires alphabet<reference_t<reference_t<typename t::ref_ids>>> &&
@@ -393,7 +393,7 @@ public:
                                                  dummy_ref_type,
                                                  decltype(std::declval<
                                                      detail::transformation_trait_or_t<
-                                                        seqan3::reference<typename traits_type::ref_sequences const>,
+                                                        seqan3::reference2<typename traits_type::ref_sequences const>,
                                                         dummy_ref_type> /* does not matter as type is not chosen */
                                                      >() | views::slice(0, 0))>;
     /*!\brief The type of field::ref_id is fixed to std::optional<int32_t>.

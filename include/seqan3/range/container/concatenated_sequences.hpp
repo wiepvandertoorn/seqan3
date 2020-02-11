@@ -190,14 +190,14 @@ protected:
                                                 std::is_same_v<remove_cvref_t<t>, reference>        ||
                                                 std::is_same_v<remove_cvref_t<t>, const_reference>  ||
                                                 (dimension_v<t> == dimension_v<value_type> &&
-                                                std::convertible_to<reference_t<t>, value_type_t<value_type>>);
+                                                std::convertible_to<reference2_t<t>, value_type_t<value_type>>);
     //!\}
 
     //!\cond
     // unfortunately we cannot specialise the variable template so we have to add an auxiliary here
     template <typename t>
         requires (dimension_v<t> == dimension_v<value_type> + 1) &&
-                  is_compatible_value<reference_t<t>>
+                  is_compatible_value<reference2_t<t>>
     static constexpr bool is_compatible_this_aux = true;
     //!\endcond
 
