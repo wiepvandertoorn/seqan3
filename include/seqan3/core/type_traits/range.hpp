@@ -76,7 +76,7 @@ template <std::ranges::input_range rng_t>
 struct reference<rng_t>
 {
     //!\brief Return the reference member definition from the queried type's iterator.
-    using type = reference_t<std::ranges::iterator_t<rng_t>>;
+    //using type = reference_t<std::ranges::iterator_t<rng_t>>;
 };
 
 // ----------------------------------------------------------------------------
