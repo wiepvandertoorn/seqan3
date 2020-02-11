@@ -70,11 +70,17 @@ template <typename t>
 struct reference;
 
 /*!\brief Shortcut for seqan3::reference (transformation_trait shortcut).
- * \tparam t The type you wish to query.
- * \see seqan3::reference
- */
+* \tparam t The type you wish to query.
+* \see seqan3::reference
+*/
 template <typename t>
 using reference_t = typename reference<t>::type;
+
+template <typename t>
+struct reference2;
+
+template <typename t>
+using reference2_t = typename reference2<t>::type;
 
 // see specialisation for iterators in core/type_traits/iterator.hpp
 // see specialisation for ranges in core/type_traits/range.hpp

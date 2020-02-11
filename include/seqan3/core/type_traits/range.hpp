@@ -79,6 +79,16 @@ struct reference<rng_t>
     //using type = reference_t<std::ranges::iterator_t<rng_t>>;
 };
 
+template <std::ranges::input_range rng_t>
+//!\cond
+    requires !std::input_or_output_iterator<rng_t>
+//!\endcond
+struct reference2<rng_t>
+{
+    //!\brief Return the reference2 member definition from the queried type's iterator.
+    using type = reference2_t<std::ranges::iterator_t<rng_t>>;
+};
+
 // ----------------------------------------------------------------------------
 // rvalue_reference
 // ----------------------------------------------------------------------------

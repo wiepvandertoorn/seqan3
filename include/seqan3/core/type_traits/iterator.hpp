@@ -58,6 +58,13 @@ struct reference<it_t>
     // using type = std::iter_reference_t<it_t>;
 };
 
+template <std::input_iterator it_t>
+struct reference2<it_t>
+{
+    //!\brief Return the member type as return type.
+    using type = std::iter_reference_t<it_t>;
+};
+
 // see specialisation for ranges in core/type_traits/range.hpp
 
 // ----------------------------------------------------------------------------
