@@ -31,7 +31,7 @@ namespace seqan3::detail
 
 //!\cond
 template <typename t>
-SEQAN3_CONCEPT has_value_type = requires { typename value_type_t<remove_cvref_t<t>>; };
+SEQAN3_CONCEPT has_value_type = requires { typename value_type2_t<remove_cvref_t<t>>; };
 //!\endcond
 
 } // namespace seqan3::detail
@@ -182,15 +182,15 @@ template <typename t>
 struct innermost_value_type
 {
     //!\brief The return type (recursion not shown).
-    using type = value_type_t<remove_cvref_t<t>>;
+    using type = value_type2_t<remove_cvref_t<t>>;
 };
 
 //!\cond
 template <typename t>
-    requires detail::has_value_type<t> && detail::has_value_type<value_type_t<remove_cvref_t<t>>>
+    requires detail::has_value_type<t> && detail::has_value_type<value_type2_t<remove_cvref_t<t>>>
 struct innermost_value_type<t>
 {
-    using type = typename innermost_value_type<value_type_t<remove_cvref_t<t>>>::type;
+    using type = typename innermost_value_type<value_type2_t<remove_cvref_t<t>>>::type;
 };
 //!\endcond
 
@@ -221,8 +221,8 @@ constexpr size_t dimension_v = 1;
 
 //!\cond
 template <typename t>
-    requires detail::has_value_type<t> && detail::has_value_type<value_type_t<remove_cvref_t<t>>>
-constexpr size_t dimension_v<t> = dimension_v<value_type_t<remove_cvref_t<t>>> + 1;
+    requires detail::has_value_type<t> && detail::has_value_type<value_type2_t<remove_cvref_t<t>>>
+constexpr size_t dimension_v<t> = dimension_v<value_type2_t<remove_cvref_t<t>>> + 1;
 //!\endcond
 
 // ----------------------------------------------------------------------------

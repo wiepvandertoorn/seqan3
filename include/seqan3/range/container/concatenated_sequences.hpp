@@ -127,7 +127,7 @@ template <typename inner_type,
 //!\cond
     requires reservible_container<std::remove_reference_t<inner_type>> &&
              reservible_container<std::remove_reference_t<data_delimiters_type>> &&
-             std::is_same_v<size_type_t<inner_type>, value_type_t<data_delimiters_type>>
+             std::is_same_v<size_type_t<inner_type>, value_type2_t<data_delimiters_type>>
 //!\endcond
 class concatenated_sequences
 {
@@ -190,7 +190,7 @@ protected:
                                                 std::is_same_v<remove_cvref_t<t>, reference>        ||
                                                 std::is_same_v<remove_cvref_t<t>, const_reference>  ||
                                                 (dimension_v<t> == dimension_v<value_type> &&
-                                                std::convertible_to<reference_t<t>, value_type_t<value_type>>);
+                                                std::convertible_to<reference_t<t>, value_type2_t<value_type>>);
     //!\}
 
     //!\cond
@@ -966,7 +966,7 @@ public:
             value_len = std::distance(std::ranges::begin(value), std::ranges::end(value));
 
         data_values.reserve(data_values.size() + count * value_len);
-        auto placeholder = views::repeat_n(value_type_t<rng_type>{}, count * value_len)
+        auto placeholder = views::repeat_n(value_type2_t<rng_type>{}, count * value_len)
                          | std::views::common;
         // insert placeholder so the tail is moved once:
         data_values.insert(data_values.begin() + data_delimiters[pos_as_num],
@@ -1052,7 +1052,7 @@ public:
         }
 
         // adapt values of inserted region
-        auto placeholder = views::repeat_n(value_type_t<value_type>{}, full_len)
+        auto placeholder = views::repeat_n(value_type2_t<value_type>{}, full_len)
                          | std::views::common;
         // insert placeholder so the tail is moved only once:
         data_values.insert(data_values.begin() + data_delimiters[pos_as_num],
