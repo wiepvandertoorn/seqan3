@@ -181,7 +181,11 @@ TYPED_TEST(single_pass_input, iterator_pre_increment)
     seqan3::detail::single_pass_input_view view{p};
 
     auto it = view.begin();
+<<<<<<< HEAD
     if constexpr (std::is_same_v<seqan3::value_type_t<TypeParam>, char>)
+=======
+    if constexpr (std::is_same_v<std::ranges::range_value_t<TypeParam>, char>)
+>>>>>>> [MISC] Replace seqan3::value_type_t with std one
     {
         EXPECT_EQ(*it,   '1');
         EXPECT_EQ(*++it, '2');
@@ -207,7 +211,11 @@ TYPED_TEST(single_pass_input, iterator_post_increment)
 
     auto it = view.begin();
 
+<<<<<<< HEAD
     if constexpr (std::is_same_v<seqan3::value_type_t<TypeParam>, char>)
+=======
+    if constexpr (std::is_same_v<std::ranges::range_value_t<TypeParam>, char>)
+>>>>>>> [MISC] Replace seqan3::value_type_t with std one
     {
         EXPECT_EQ(*it, '1');
         it++;
@@ -320,7 +328,11 @@ TYPED_TEST(single_pass_input, fn_functional)
     auto view = p | seqan3::views::single_pass_input | seqan3::views::take(3);
     auto it = view.begin();
 
+<<<<<<< HEAD
     if constexpr (std::is_same_v<seqan3::value_type_t<TypeParam>, char>)
+=======
+    if constexpr (std::is_same_v<std::ranges::range_value_t<TypeParam>, char>)
+>>>>>>> [MISC] Replace seqan3::value_type_t with std one
     {
         EXPECT_EQ(*it,   '1');
         EXPECT_EQ(*++it, '2');
@@ -342,7 +354,11 @@ TYPED_TEST(single_pass_input, fn_pipeable)
 
     auto view = p | seqan3::views::single_pass_input | std::views::take(3);
     auto it = view.begin();
+<<<<<<< HEAD
     if constexpr (std::is_same_v<seqan3::value_type_t<TypeParam>, char>)
+=======
+    if constexpr (std::is_same_v<std::ranges::range_value_t<TypeParam>, char>)
+>>>>>>> [MISC] Replace seqan3::value_type_t with std one
     {
         EXPECT_EQ(*it,   '1');
         EXPECT_EQ(*++it, '2');

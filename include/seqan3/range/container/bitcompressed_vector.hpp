@@ -123,7 +123,7 @@ private:
     //!\cond
     //NOTE(h-2): it is entirely unclear to me why we need this
     template <typename t>
-        requires std::is_same_v<value_type_t<remove_cvref_t<t>>, alphabet_type>
+        requires std::is_same_v<std::ranges::range_value_t<remove_cvref_t<t>>, alphabet_type>
     static constexpr bool has_same_value_type_v = true;
     //!\endcond
 
@@ -164,7 +164,7 @@ public:
 
     /*!\brief Construct from a different range.
      * \tparam other_range_t The type of range to construct from; must satisfy std::ranges::input_range and
-     *                       std::common_reference_with<value_type_t<other_range_t>, value_type>.
+     *                       std::common_reference_with<std::ranges::range_value_t<other_range_t>, value_type>.
      * \param[in]      range The sequences to construct/assign from.
      *
      * ### Complexity
@@ -201,7 +201,7 @@ public:
 
     /*!\brief Construct from pair of iterators.
      * \tparam begin_iterator_type Must model std::forward_iterator and
-     *                             std::common_reference_with<value_type_t<begin_iterator_type>, value_type>.
+     *                             std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>.
      * \tparam   end_iterator_type Must model std::sentinel_for.
      * \param[in]         begin_it Begin of range to construct/assign from.
      * \param[in]           end_it End of range to construct/assign from.
@@ -218,7 +218,7 @@ public:
     bitcompressed_vector(begin_iterator_type begin_it, end_iterator_type end_it)
     //!\cond
         requires std::sentinel_for<end_iterator_type, begin_iterator_type> &&
-                 std::common_reference_with<value_type_t<begin_iterator_type>, value_type>
+                 std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>
     //!\endcond
     {
         insert(cend(), begin_it, end_it);
@@ -258,7 +258,7 @@ public:
 
     /*!\brief Assign from a different range.
      * \tparam other_range_t The type of range to be inserted; must satisfy std::ranges::input_range and
-     *                       std::common_reference_with<value_type_t<other_range_t>, value_type>.
+     *                       std::common_reference_with<std::ranges::range_value_t<other_range_t>, value_type>.
      * \param[in]      range The sequences to construct/assign from.
      *
      * ### Complexity
@@ -272,7 +272,7 @@ public:
     template <std::ranges::input_range other_range_t>
     void assign(other_range_t && range)
     //!\cond
-        requires std::common_reference_with<value_type_t<other_range_t>, value_type>
+        requires std::common_reference_with<std::ranges::range_value_t<other_range_t>, value_type>
     //!\endcond
     {
         bitcompressed_vector rhs{std::forward<other_range_t>(range)};
@@ -299,7 +299,7 @@ public:
 
     /*!\brief Assign from pair of iterators.
      * \tparam begin_iterator_type Must satisfy std::forward_iterator and
-     *                             std::common_reference_with<value_type_t<begin_iterator_type>, value_type>.
+     *                             std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>.
      * \tparam   end_iterator_type Must satisfy std::sentinel_for.
      * \param[in]         begin_it Begin of range to construct/assign from.
      * \param[in]           end_it End of range to construct/assign from.
@@ -316,7 +316,7 @@ public:
     void assign(begin_iterator_type begin_it, end_iterator_type end_it)
     //!\cond
         requires std::sentinel_for<end_iterator_type, begin_iterator_type> &&
-                 std::common_reference_with<value_type_t<begin_iterator_type>, value_type>
+                 std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>
     //!\endcond
     {
         bitcompressed_vector rhs{begin_it, end_it};
@@ -731,7 +731,7 @@ public:
 
     /*!\brief Inserts elements from range `[begin_it, end_it)` before position in the container.
      * \tparam begin_iterator_type Must satisfy std::forward_iterator and
-     *                             std::common_reference_with<value_type_t<begin_iterator_type>, value_type>.
+     *                             std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>.
      * \tparam   end_iterator_type Must satisfy std::sentinel_for.
      * \param[in]              pos Iterator before which the content will be inserted. `pos` may be the end() iterator.
      * \param[in]         begin_it Begin of range to construct/assign from.
@@ -757,7 +757,7 @@ public:
     iterator insert(const_iterator pos, begin_iterator_type begin_it, end_iterator_type end_it)
     //!\cond
         requires std::sentinel_for<end_iterator_type, begin_iterator_type> &&
-                 std::common_reference_with<value_type_t<begin_iterator_type>, value_type>
+                 std::common_reference_with<std::iter_value_t<begin_iterator_type>, value_type>
     //!\endcond
     {
         auto const pos_as_num = std::distance(cbegin(), pos);
