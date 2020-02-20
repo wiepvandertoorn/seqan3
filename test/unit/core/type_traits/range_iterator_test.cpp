@@ -231,7 +231,7 @@ TEST(range_and_iterator, innermost_value_type_)
     using vector_of_int_vector = std::vector<std::vector<int>>;
     using iterator_of_int_vector = std::ranges::iterator_t<std::vector<int>>;
     using inner_value_type_of_const_iterator = seqan3::innermost_value_type_t<iterator_of_int_vector const>;
-    using type_list_example = seqan3::type_list<typename seqan3::innermost_value_type<std::vector<int>>::type, // long
+    using type_list_example = seqan3::type_list<typename //seqan3::innermost_value_type<std::vector<int>>::type, // long
                                                 seqan3::innermost_value_type_t<std::vector<int>>, // short
                                                 seqan3::innermost_value_type_t<vector_of_int_vector>, // two-level
                                                 seqan3::innermost_value_type_t<iterator_of_int_vector>, // iterator
