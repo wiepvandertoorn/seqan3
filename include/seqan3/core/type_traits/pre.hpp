@@ -47,6 +47,12 @@ struct value_type;
 template <typename t>
 using value_type_t = typename value_type<t>::type;
 
+template <typename t>
+struct value_type2;
+
+template <typename t>
+using value_type2_t = typename value_type2<t>::type;
+
 // see specialisation for iterators in core/type_traits/iterator.hpp
 // see specialisation for ranges in core/type_traits/range.hpp
 
