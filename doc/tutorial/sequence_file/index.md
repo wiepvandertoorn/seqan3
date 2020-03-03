@@ -130,7 +130,7 @@ The formerly introduced formats can be identified by the following file name ext
 | EMBL        | seqan3::format_embl  |   `.embl`                                         |
 
 
-You can access the valid file extension via the `file_extension` member variable in a format:
+You can access the valid file extension via the `file_extensions` member variable in a format:
 
 \snippet doc/tutorial/sequence_file/sequence_file_snippets.cpp file_extensions
 
