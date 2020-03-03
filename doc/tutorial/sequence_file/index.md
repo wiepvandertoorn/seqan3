@@ -42,7 +42,7 @@ Currently, SeqAn supports the following file formats:
 For instance, you need to have *zlib* installed for reading `.gz` files and *libbz2* for reading `.bz2` files.
 You can check whether you have installed these libraries by running `cmake .` in your build directory.
 If `-- Optional dependency: ZLIB-x.x.x found.` is displayed on the command line then you can read/write
-compressed files in your programs. TODO what about bz2
+compressed files in your programs.
 
 ## Basic layout of SeqAn file objects
 
