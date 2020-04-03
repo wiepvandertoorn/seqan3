@@ -73,7 +73,6 @@ TEST(range_and_iterator, value_type_)
     auto v = std::views::iota(1);
 
     using type_list_example = seqan3::type_list<std::ranges::range_value_t<std::vector<int>>, // short
-                                                //typename seqan3::value_type<std::vector<int>>::type, // long
                                                 typename std::vector<int>::value_type, // member type
                                                 std::ranges::range_value_t<std::vector<int> const>, // const container
                                                 std::iter_value_t<iterator_of_int_vector>, // iterator
@@ -81,7 +80,6 @@ TEST(range_and_iterator, value_type_)
                                                 std::ranges::range_value_t<decltype(v)>>; // range, no member
 
     using comp_list = seqan3::type_list<int,
-                                        //int,
                                         int,
                                         int,
                                         int,

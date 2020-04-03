@@ -38,7 +38,7 @@ namespace seqan3
  * There is a shortcut for this transformation trait: seqan3::value_type_t
  */
 template <typename t>
-struct value_type;
+struct SEQAN3_DEPRECATED_310 value_type;
 
 /*!\brief Shortcut for seqan3::value_type (transformation_trait shortcut).
  * \tparam t The type you wish to query.

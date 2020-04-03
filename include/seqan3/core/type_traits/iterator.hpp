@@ -35,7 +35,7 @@ namespace seqan3
  * \tparam it_t The type you wish to query; must model std::input_iterator.
  */
 template <std::input_iterator it_t>
-struct value_type<it_t>
+struct SEQAN3_DEPRECATED_310 value_type<it_t>
 {
     //!\brief Return the member type as return type.
     using type = std::iter_value_t<it_t>;

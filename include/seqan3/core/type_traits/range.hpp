@@ -55,7 +55,7 @@ template <std::ranges::input_range rng_t>
 //!\cond
     requires !std::input_or_output_iterator<rng_t>
 //!\endcond
-struct value_type<rng_t>
+struct SEQAN3_DEPRECATED_310 value_type<rng_t>
 {
     //!\brief Return the value_type member definition from the queried type's iterator.
     using type = value_type_t<std::ranges::iterator_t<rng_t>>;
