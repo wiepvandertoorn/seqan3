@@ -283,18 +283,6 @@ private:
     /*!\name Associated types
      * \{
      */
-    //!\brief The reference_type.
-    using reference         = reference_t<urng_t>;
-    //!\brief The const_reference type is equal to the reference type if the underlying range is const-iterable.
-    using const_reference   = detail::transformation_trait_or_t<seqan3::reference<urng_t const>, void>;
-    //!\brief The value_type (which equals the reference_type with any references removed).
-    using value_type        = std::ranges::range_value_t<urng_t>;
-    //!\brief The size_type is `size_t` if the view is exact, otherwise `void`.
-    using size_type         = std::conditional_t<exactly || std::ranges::sized_range<urng_t>,
-                                                 transformation_trait_or_t<seqan3::size_type<urng_t>, size_t>,
-                                                 void>;
-    //!\brief A signed integer type, usually std::ptrdiff_t.
-    using difference_type   = std::ranges::range_difference_t<urng_t>;
     //!\brief The iterator type of this view (a random access iterator).
     using iterator          = iterator_type<urng_t>;
     //!\brief The const_iterator type is equal to the iterator type if the underlying range is const-iterable.
@@ -455,7 +443,7 @@ public:
      *
      * No-throw guarantee.
      */
-    constexpr size_type size() const noexcept
+    constexpr auto size() const noexcept
         requires exactly || std::ranges::sized_range<urng_t>
     {
         return target_size;
