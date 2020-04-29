@@ -453,7 +453,7 @@ public:
     //!\brief The value_type (which equals the reference_type with any references removed).
     using value_type        = typename iterator::value_type;
     //!\brief If the underliying range is Sized, this resolves to range_type::size_type, otherwise void.
-    using size_type         = detail::transformation_trait_or_t<seqan3::size_type<underlying_range_type>, void>;
+    using size_type         = detail::transformation_trait_or_t<seqan3::size_type2<underlying_range_type>, void>;
     //!\brief A signed integer type, usually std::ptrdiff_t.
     using difference_type   = std::iter_difference_t<iterator>;
     //!\}

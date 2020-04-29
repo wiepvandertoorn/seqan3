@@ -151,6 +151,16 @@ struct size_type<rng_t>
     using type = decltype(std::ranges::size(std::declval<rng_t &>()));
 };
 
+template <std::ranges::sized_range rng_t>
+//!\cond
+    requires (!std::input_or_output_iterator<rng_t>)
+//!\endcond
+struct size_type2<rng_t>
+{
+    //!\brief Return the size_type as returned by the size function.
+    using type = decltype(std::ranges::size(std::declval<rng_t &>()));
+};
+
 // ----------------------------------------------------------------------------
 // innermost_value_type
 // ----------------------------------------------------------------------------

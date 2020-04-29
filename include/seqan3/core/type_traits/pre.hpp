@@ -187,6 +187,9 @@ using difference_type_t = typename difference_type<t>::type;
 template <typename t>
 struct size_type;
 
+template <typename t>
+struct size_type2;
+
 /*!\brief Shortcut for seqan3::size_type (transformation_trait shortcut).
  * \tparam t The type you wish to query.
  * \see seqan3::size_type
