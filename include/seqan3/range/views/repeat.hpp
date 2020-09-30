@@ -68,16 +68,16 @@ private:
     //!\}
 
     //!\brief The forward declared iterator type for views::repeat (a random access iterator).
-    template <typename parent_type>
+    template <bool const_range>
     class basic_iterator;
 
     /*!\name Associated types
     * \{
     */
     //!\brief The iterator type of this view (a random access iterator).
-    using iterator = basic_iterator<repeat_view>;
+    using iterator = basic_iterator<false>;
     //!\brief The const_iterator type is equal to the iterator type but over the const qualified type.
-    using const_iterator = basic_iterator<repeat_view const>;
+    using const_iterator = basic_iterator<true>;
     //!\}
 
     //!\brief Befriend the following class s.t. iterator and const_iterator can be defined for this type.
@@ -198,12 +198,15 @@ private:
 
 //!\brief The iterator type for views::repeat (a random access iterator).
 template <std::copy_constructible value_t>
-template <typename parent_type>
+template <bool const_range>
 class repeat_view<value_t>::basic_iterator :
-    public detail::random_access_iterator_base<parent_type, basic_iterator>
+    public detail::random_access_iterator_base<repeat_view, basic_iterator>
 {
+    // //!\brief Type of the parent range.
+    // using parent_t = detail::maybe_const_range_t<const_range, repeat_view>;
+
     //!\brief The CRTP base type.
-    using base_t = detail::random_access_iterator_base<parent_type, basic_iterator>;
+    using base_t = detail::random_access_iterator_base<repeat_view, basic_iterator>;
 
     //!\brief The base position type.
     using typename base_t::position_type;
@@ -233,17 +236,16 @@ public:
     /*!\brief Construct by host range.
      * \param host The host range.
      */
-    explicit constexpr basic_iterator(parent_type & host) noexcept : base_t{host} {}
+    explicit constexpr basic_iterator(basic_iterator & host) noexcept : base_t{host} {}
 
     /*!\brief Constructor for const version from non-const version.
      * \param rhs a non-const version of basic_iterator to construct from.
      */
-    template <typename parent_type2>
+    template <typename other_const_range>
     //!\cond
-        requires std::is_const_v<parent_type> && (!std::is_const_v<parent_type2>) &&
-                 std::is_same_v<std::remove_const_t<parent_type>, parent_type2>
+        requires const_range && !other_const_range
     //!\endcond
-    constexpr basic_iterator(basic_iterator<parent_type2> const & rhs) noexcept :
+    constexpr basic_iterator(basic_iterator<!other_const_range> const & rhs) noexcept :
         base_t{rhs}
     {}
     //!\}
