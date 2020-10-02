@@ -70,7 +70,7 @@ private:
     static constexpr bool const_iterable = const_iterable_range<urng_t> &&
                                            std::regular_invocable<fun_t, std::ranges::range_reference_t<urng_t>>;
 
-    template <typename rng_t>
+    template <bool const_range>
     class basic_iterator;
 
     template <bool is_const_range>
@@ -86,10 +86,10 @@ private:
     //!\brief The iterator type of this view (a random access iterator).
     using iterator = std::conditional_t<and_consume && !std::ranges::forward_range<urng_t>,
                                         basic_consume_iterator<urng_t>,
-                                        basic_iterator<urng_t>>;
+                                        basic_iterator<false>>;
 
     //!\brief The const_iterator type is equal to the iterator type if the underlying range is const-iterable.
-    using const_iterator = basic_iterator<urng_t const>;
+    using const_iterator = basic_iterator<true>;
     //!\}
 
 public:
@@ -194,19 +194,19 @@ view_take_until(urng_t &&, fun_t) -> view_take_until<std::views::all_t<urng_t>, 
 //!\brief The iterator type inherits from the underlying type, but overwrites several operators.
 //!\tparam rng_t Should be `urng_t` for defining #iterator and `urng_t const` for defining #const_iterator.
 template <std::ranges::view urng_t, typename fun_t, bool or_throw, bool and_consume>
-template <typename rng_t>
+template <bool const_range>
 class view_take_until<urng_t, fun_t, or_throw, and_consume>::basic_iterator :
-    public inherited_iterator_base<basic_iterator<rng_t>, std::ranges::iterator_t<rng_t>>
+    public inherited_iterator_base<basic_iterator<const_range>, maybe_const_iterator_t<const_range, urng_t>>
 {
 private:
     //!\brief The iterator type of the underlying range.
-    using base_base_t = std::ranges::iterator_t<rng_t>;
+    using base_base_t = maybe_const_iterator_t<const_range, urng_t>;
     //!\brief The CRTP wrapper type.
-    using base_t = inherited_iterator_base<basic_iterator, std::ranges::iterator_t<rng_t>>;
+    using base_t = inherited_iterator_base<basic_iterator, maybe_const_iterator_t<const_range, urng_t>>;
     //!\brief The sentinel type is identical to that of the underlying range.
-    using sentinel_type = std::ranges::sentinel_t<rng_t>;
+    using sentinel_type = maybe_const_sentinel_t<const_range, urng_t>;
     //!\brief Auxiliary type.
-    using fun_ref_t = std::conditional_t<std::is_const_v<rng_t>,
+    using fun_ref_t = std::conditional_t<const_range,
                                          std::remove_reference_t<fun_t> const &,
                                          std::remove_reference_t<fun_t> &>;
     //!\brief Reference to the functor stored in the view.
@@ -455,8 +455,8 @@ public:
      */
 
     //!\brief Compares `lhs` with `rhs` for equality.
-    template <typename rng_t>
-    friend bool operator==(basic_iterator<rng_t> const & lhs, basic_sentinel const & rhs)
+    template <bool const_range>
+    friend bool operator==(basic_iterator<const_range> const & lhs, basic_sentinel const & rhs)
     {
         // Actual comparison delegated to lhs base
         if (lhs.base() == rhs.urng_sentinel)
@@ -471,22 +471,22 @@ public:
     }
 
     //!\brief Compares `lhs` with `rhs` for equality.
-    template <typename rng_t>
-    friend bool operator==(basic_sentinel const & lhs, basic_iterator<rng_t> const & rhs)
+    template <bool const_range>
+    friend bool operator==(basic_sentinel const & lhs, basic_iterator<const_range> const & rhs)
     {
         return rhs == lhs;
     }
 
     //!\brief Compares `lhs` with `rhs` for inequality.
-    template <typename rng_t>
-    friend bool operator!=(basic_iterator<rng_t> const & lhs, basic_sentinel const & rhs)
+    template <bool const_range>
+    friend bool operator!=(basic_iterator<const_range> const & lhs, basic_sentinel const & rhs)
     {
         return !(lhs == rhs);
     }
 
     //!\brief Compares `lhs` with `rhs` for inequality.
-    template <typename rng_t>
-    friend bool operator!=(basic_sentinel const & lhs, basic_iterator<rng_t> const & rhs)
+    template <bool const_range>
+    friend bool operator!=(basic_sentinel const & lhs, basic_iterator<const_range> const & rhs)
     {
         return rhs != lhs;
     }
