@@ -46,7 +46,7 @@ class pairwise_combine_view : public std::ranges::view_interface<pairwise_combin
 private:
 
     //!\brief The forward declared iterator type for pairwise_combine_view.
-    template <typename range_type>
+    template <bool const_range>
     class basic_iterator;
 
     /*!\name Associated types
@@ -54,9 +54,9 @@ private:
      */
 
     //!\brief The iterator type.
-    using iterator = basic_iterator<underlying_range_type>;
+    using iterator = basic_iterator<false>;
     //!\brief The const iterator type. Evaluates to void if the underlying range is not const iterable.
-    using const_iterator = transformation_trait_or_t<std::type_identity<basic_iterator<underlying_range_type const>>,
+    using const_iterator = transformation_trait_or_t<std::type_identity<basic_iterator<true>>,
                                                      void>;
     //!\}
 
@@ -259,18 +259,18 @@ template <std::ranges::view underlying_range_type>
 //!\cond
     requires std::ranges::forward_range<underlying_range_type> && std::ranges::common_range<underlying_range_type>
 //!\endcond
-template <typename range_type>
+template <bool const_range>
 class pairwise_combine_view<underlying_range_type>::basic_iterator
 {
 private:
 
     //!\brief Friend declaration for iterator with different range const-ness.
-    template <typename other_range_type>
-        requires std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+    template <bool other_const_range>
+        requires (const_range != other_const_range)
     friend class basic_iterator;
 
     //!\brief Alias type for the iterator over the passed range type.
-    using underlying_iterator_type = std::ranges::iterator_t<range_type>;
+    using underlying_iterator_type = std::ranges::iterator_t<underlying_range_type>;
     //!\brief Alias for the value type of the underlying iterator type.
     using underlying_val_t = std::iter_value_t<underlying_iterator_type>;
     //!\brief Alias for the reference type of the underlying iterator type.
@@ -334,13 +334,11 @@ public:
      * Allows construction of a const iterator (operating on a const range) from a non-const iterator.
      * This special constructor is needed as it is not covered by the standard copy and move constructors.
      */
-    template <typename other_range_type>
+    constexpr basic_iterator(basic_iterator<!const_range> const & other) noexcept
     //!\cond
-        requires std::convertible_to<other_range_type, range_type &> &&
-                 std::same_as<std::remove_const_t<other_range_type>, std::remove_const_t<range_type>>
+        requires const_range
     //!\endcond
-    constexpr basic_iterator(basic_iterator<other_range_type> other) noexcept :
-        basic_iterator{std::move(other.first_it), std::move(other.begin_it), std::move(other.end_it)}
+        : basic_iterator{std::move(other.first_it), std::move(other.begin_it), std::move(other.end_it)}
     {}
     //!\}
 
@@ -447,7 +445,7 @@ public:
     //!\brief Advances the iterator by the given offset; `underlying_iterator_type` must model
     //!\      std::random_access_iterator.
     constexpr friend basic_iterator operator+(difference_type const offset, basic_iterator iter)
-        noexcept(noexcept(std::declval<basic_iterator<range_type> &>().from_index(1)))
+        noexcept(noexcept(std::declval<basic_iterator &>().from_index(1)))
     //!\cond
         requires std::random_access_iterator<underlying_iterator_type>
     //!\endcond
@@ -485,9 +483,9 @@ public:
     template <typename other_range_type>
     //!\cond
         requires std::random_access_iterator<underlying_iterator_type> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr difference_type operator-(basic_iterator<other_range_type> const & rhs) const
+    constexpr difference_type operator-(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<basic_iterator &>().to_index()))
     {
         return static_cast<difference_type>(to_index() - rhs.to_index());
@@ -507,9 +505,9 @@ public:
     template <typename other_range_type>
     //!\cond
         requires std::equality_comparable_with<underlying_iterator_type, std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator==(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator==(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() == std::declval<underlying_iterator_type &>()))
     {
         return std::tie(first_it, second_it) == std::tie(rhs.first_it, rhs.second_it);
@@ -519,9 +517,9 @@ public:
     template <typename other_range_type>
     //!\cond
         requires std::equality_comparable_with<underlying_iterator_type, std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator!=(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator!=(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() != std::declval<underlying_iterator_type &>()))
     {
         return !(*this == rhs);
@@ -532,9 +530,9 @@ public:
     //!\cond
         requires std::totally_ordered_with<underlying_iterator_type,
                                                std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator<(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator<(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() < std::declval<underlying_iterator_type &>()))
     {
         return std::tie(first_it, second_it) < std::tie(rhs.first_it, rhs.second_it);
@@ -545,9 +543,9 @@ public:
     //!\cond
         requires std::totally_ordered_with<underlying_iterator_type,
                                                std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator>(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator>(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() > std::declval<underlying_iterator_type &>()))
 
     {
@@ -559,9 +557,9 @@ public:
     //!\cond
         requires std::totally_ordered_with<underlying_iterator_type,
                                                std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator<=(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator<=(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() <= std::declval<underlying_iterator_type &>()))
     {
         return std::tie(first_it, second_it) <= std::tie(rhs.first_it, rhs.second_it);
@@ -572,9 +570,9 @@ public:
     //!\cond
         requires std::totally_ordered_with<underlying_iterator_type,
                                                std::ranges::iterator_t<other_range_type>> &&
-                 std::same_as<std::remove_const_t<range_type>, std::remove_const_t<other_range_type>>
+                 std::same_as<std::remove_const_t<underlying_range_type>, std::remove_const_t<other_range_type>>
     //!\endcond
-    constexpr bool operator>=(basic_iterator<other_range_type> const & rhs) const
+    constexpr bool operator>=(basic_iterator<true> const & rhs) const
         noexcept(noexcept(std::declval<underlying_iterator_type &>() >= std::declval<underlying_iterator_type &>()))
     {
         return std::tie(first_it, second_it) >= std::tie(rhs.first_it, rhs.second_it);
